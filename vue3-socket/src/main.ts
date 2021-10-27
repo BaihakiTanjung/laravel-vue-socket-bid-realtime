@@ -13,5 +13,6 @@ window.Echo = new Echo({
 });
 
 import "./assets/css/index.css";
+import router from './router'
 
-createApp(App).mount("#app");
+createApp(App).use(router).mount("#app");

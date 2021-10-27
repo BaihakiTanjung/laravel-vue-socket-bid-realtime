@@ -1,7 +1,7 @@
 <template>
   <div class="product-card">
     <div class="py-6">
-      <div class="flex max-w-md bg-white shadow-lg rounded-lg overflow-hidden">
+      <div class="flex max-w-lg bg-white shadow-lg rounded-lg overflow-hidden">
         <div
           class="w-1/3 bg-cover"
           style="
@@ -91,6 +91,7 @@
                 uppercase
                 rounded
               "
+              :disabled="data.clicked"
               @click="submitBid"
             >
               Bid
@@ -101,7 +102,7 @@
     </div>
     <div v-for="list in priceList" :key="list.id">
       <h4 class="text-gray-700 font-bold text-center">
-        {{ formatPrice(list.price || 0) }}
+        {{ list.username }} - {{ formatPrice(list.price || 0) }}
       </h4>
     </div>
   </div>
@@ -116,6 +117,7 @@ import {
   watchEffect
 } from "vue";
 import axios from "axios";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "ProductCard",
@@ -127,19 +129,24 @@ export default defineComponent({
     priceList: Array
   },
   setup(props) {
+    const router = useRouter();
+    // const route = useRoute();
+
     const data = reactive({
       bid: 0,
-      kelipatan: 1000000
+      kelipatan: 10000000,
+      clicked: false
     });
 
     onMounted(() => {
       // data.bid = props.price || 0;
+      // console.log(router.currentRoute.value.params.user);
     });
 
     watchEffect(() => (data.bid = props.price + data.kelipatan));
 
     const decrement = () => {
-      if (data.bid === 0) return;
+      if (data.bid === 0 || props.price + data.kelipatan >= data.bid) return;
       data.bid -= data.kelipatan;
     };
 
@@ -163,15 +170,25 @@ export default defineComponent({
     const submitBid = async () => {
       console.log("submit bid");
 
+      data.clicked = true;
+
       await axios
         .post("http://127.0.0.1:8000/api/sendBidUnit", {
           user_id: 0,
           car_id: 0,
+          username: router.currentRoute.value.params.user,
           price: data.bid
         })
         .then(response => {
           // console.log(response.data);
           console.log("res", response);
+
+          setTimeout(
+            function() {
+              data.clicked = false;
+            }.bind(this),
+            1000
+          );
         });
     };
 

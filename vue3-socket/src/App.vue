@@ -1,13 +1,17 @@
 <template>
   <div>
     <div class="product-card bg-yellow-300 items-center h-screen p-10">
-      <div class="flex justify-center p-5 text-gray-700 ">
+      <div class="flex justify-center p-5 text-gray-700 text-center">
         <h1 class="text-3xl font-bold">
           {{ msg }}
         </h1>
       </div>
       <div class="flex justify-center p-5">
-        <product-card v-if="price" :price="price" :priceList="priceList" />
+        <product-card
+          v-if="price !== 'undefined'"
+          :price="price"
+          :priceList="priceList"
+        />
       </div>
     </div>
   </div>
@@ -31,8 +35,10 @@ export default defineComponent({
       await axios.get("http://127.0.0.1:8000/api/priceList").then(response => {
         console.log(response.data);
         priceList.value = response.data.data;
-        price.value = response.data.data[0].price;
-        // price.value = response.data.data[0].price + kelipatan.value;
+
+        if (response.data.data.length > 0) {
+          price.value = response.data.data[0].price;
+        }
       });
     };
 

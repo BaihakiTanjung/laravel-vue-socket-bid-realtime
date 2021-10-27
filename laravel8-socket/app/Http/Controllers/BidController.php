@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Bid;
 use App\Events\BidEvent;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 
 class BidController extends Controller
 {
@@ -28,6 +30,7 @@ class BidController extends Controller
             $bid = new Bid();
             $bid->user_id = $request->user_id;
             $bid->car_id = $request->car_id;
+            $bid->username = $request->username;
             $bid->price = $request->price;
             $bid->save();
 
@@ -42,10 +45,17 @@ class BidController extends Controller
 
     public function priceList()
     {
-        $priceList = Bid::orderBy('price', 'desc')->get();
+
+        // $priceListRedis = Cache::remember('priceList', now()->addMinutes(10), function () {
+        //     return Bid::orderBy('price', 'desc')->get();
+        // });
+
+        $priceList =  Bid::orderBy('price', 'desc')->limit(10)->get();
+        // dd($value);
 
         $json = [
             "success" => "data tersedia",
+            // "data" => $priceListRedis,
             "data" => $priceList
         ];
 

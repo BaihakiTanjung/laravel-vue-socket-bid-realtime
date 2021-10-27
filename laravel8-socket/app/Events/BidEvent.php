@@ -71,7 +71,7 @@ class BidEvent implements ShouldBroadcastNow
     public function broadcastWith()
     {
 
-        $data = Bid::orderBy('price', 'desc')->get();
+        $data = Bid::orderBy('price', 'desc')->limit(10)->get();
         $lastPrice = Bid::orderBy('price', 'desc')->first();
 
         return [
