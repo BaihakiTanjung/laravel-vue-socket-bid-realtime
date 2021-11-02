@@ -9,7 +9,7 @@ class Bid extends Model
 {
     use HasFactory;
 
-    protected $table = "bid";
+    // protected $table = "bid";
 
     protected $fillable = [
         "user_id", "car_id", "price"

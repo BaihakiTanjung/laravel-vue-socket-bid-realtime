@@ -16,7 +16,7 @@ class BidEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    // public $price;
+    public $channel;
 
     /**
      * The name of the queue connection to use when broadcasting the event.
@@ -38,9 +38,9 @@ class BidEvent implements ShouldBroadcastNow
      * @return void
      */
     // public function __construct($price)
-    public function __construct()
+    public function __construct($channel)
     {
-        // $this->price = $price;
+        $this->channel = $channel;
     }
 
     /**
@@ -50,7 +50,7 @@ class BidEvent implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('BidChannel');
+        return new Channel('BidChannel.' . $this->channel);
     }
 
     /*
@@ -71,8 +71,8 @@ class BidEvent implements ShouldBroadcastNow
     public function broadcastWith()
     {
 
-        $data = Bid::orderBy('price', 'desc')->limit(10)->get();
-        $lastPrice = Bid::orderBy('price', 'desc')->first();
+        $data = Bid::orderBy('price', 'desc')->where("user_id", "=", $this->channel)->limit(10)->get();
+        $lastPrice = Bid::orderBy('price', 'desc')->where("user_id", "=", $this->channel)->first();
 
         return [
             'data' => $data,

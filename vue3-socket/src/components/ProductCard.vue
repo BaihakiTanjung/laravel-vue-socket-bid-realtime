@@ -114,7 +114,7 @@ import {
   reactive,
   computed,
   onMounted,
-  watchEffect
+  watchEffect,
 } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
@@ -124,9 +124,9 @@ export default defineComponent({
   props: {
     price: {
       type: Number,
-      default: 0
+      default: 0,
     },
-    priceList: Array
+    priceList: Array,
   },
   setup(props) {
     const router = useRouter();
@@ -135,7 +135,7 @@ export default defineComponent({
     const data = reactive({
       bid: 0,
       kelipatan: 10000000,
-      clicked: false
+      clicked: false,
     });
 
     onMounted(() => {
@@ -174,17 +174,18 @@ export default defineComponent({
 
       await axios
         .post("http://127.0.0.1:8000/api/sendBidUnit", {
-          user_id: 0,
-          car_id: 0,
+          user_id: router.currentRoute.value.params.id,
+          car_id: router.currentRoute.value.params.id,
           username: router.currentRoute.value.params.user,
-          price: data.bid
+          price: data.bid,
+          channel: router.currentRoute.value.params.id,
         })
-        .then(response => {
+        .then((response) => {
           // console.log(response.data);
           console.log("res", response);
 
           setTimeout(
-            function() {
+            function () {
               data.clicked = false;
             }.bind(this),
             1000
@@ -198,8 +199,8 @@ export default defineComponent({
       decrement,
       formatBid,
       submitBid,
-      formatPrice
+      formatPrice,
     };
-  }
+  },
 });
 </script>

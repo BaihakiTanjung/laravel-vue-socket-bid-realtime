@@ -21,5 +21,5 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/lastPriceUnit', [BidController::class, 'lastPriceUnit']);
-Route::get('/priceList', [BidController::class, 'priceList']);
+Route::post('/priceList', [BidController::class, 'priceList']);
 Route::post('/sendBidUnit', [BidController::class, 'sendBidUnit']);

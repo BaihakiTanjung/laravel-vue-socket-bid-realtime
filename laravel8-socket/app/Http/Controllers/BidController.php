@@ -35,7 +35,7 @@ class BidController extends Controller
             $bid->save();
 
             // Send event broadcast
-            event(new BidEvent($request->price));
+            event(new BidEvent($request->channel));
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -43,19 +43,13 @@ class BidController extends Controller
         return response()->json(['success' => "sukses bid"], 200);
     }
 
-    public function priceList()
+    public function priceList(Request $request)
     {
 
-        // $priceListRedis = Cache::remember('priceList', now()->addMinutes(10), function () {
-        //     return Bid::orderBy('price', 'desc')->get();
-        // });
-
-        $priceList =  Bid::orderBy('price', 'desc')->limit(10)->get();
-        // dd($value);
+        $priceList =  Bid::orderBy('price', 'desc')->where("user_id", "=", $request->channel)->limit(10)->get();
 
         $json = [
             "success" => "data tersedia",
-            // "data" => $priceListRedis,
             "data" => $priceList
         ];
 
